@@ -1,0 +1,81 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{e4c640b7-b7af-4efe-b1f2-3f14aab436cd}</ProjectGuid>
+    <MainSource>BugFinder.dpr</MainSource>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>..\..\bin\BugFinder.exe</DCC_DependencyCheckOutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_Alignment>1</DCC_Alignment>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_WriteableConstants>True</DCC_WriteableConstants>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
+    <DCC_RangeChecking>True</DCC_RangeChecking>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_ExeOutput>..\..\bin</DCC_ExeOutput>
+    <DCC_DcuOutput>..\..\dcu</DCC_DcuOutput>
+    <DCC_ObjOutput>..\..\dcu</DCC_ObjOutput>
+    <DCC_HppOutput>..\..\dcu</DCC_HppOutput>
+    <DCC_Define>RELEASE</DCC_Define>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_Alignment>1</DCC_Alignment>
+    <DCC_WriteableConstants>True</DCC_WriteableConstants>
+    <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
+    <DCC_RangeChecking>True</DCC_RangeChecking>
+    <DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
+    <DCC_ExeOutput>..\..\bin</DCC_ExeOutput>
+    <DCC_DcuOutput>..\..\dcu</DCC_DcuOutput>
+    <DCC_ObjOutput>..\..\dcu</DCC_ObjOutput>
+    <DCC_HppOutput>..\..\dcu</DCC_HppOutput>
+    <DCC_Define>DEBUG</DCC_Define>
+    <DCC_Optimize>False</DCC_Optimize>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType>VCLApplication</Borland.ProjectType>
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters><Parameters Name="RunParams">BugFinder.ini</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">True</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">2</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">49</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1040</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName">Antonio Petricca</VersionInfoKeys><VersionInfoKeys Name="FileDescription">antonio.petricca@gmail.com</VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.2.0.49</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName">Bug Finder</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">BugFinder.dpr</Source></Source><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+    </Excluded_Packages></Delphi.Personality></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <ItemGroup>
+    <DelphiCompile Include="BugFinder.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="..\..\libs\common\hDebugUtils.pas" />
+    <DCCReference Include="..\..\libs\common\hUtils.pas" />
+    <DCCReference Include="..\..\libs\common\uDebugUtils.pas" />
+    <DCCReference Include="..\..\libs\common\uLog.pas" />
+    <DCCReference Include="..\..\libs\common\uLogRotator.pas" />
+    <DCCReference Include="..\..\libs\common\uUtils.pas" />
+    <DCCReference Include="..\intf\hBfCfgWiz.pas" />
+    <DCCReference Include="..\intf\hCoreServices.pas" />
+    <DCCReference Include="..\intf\hExcProvider.pas" />
+    <DCCReference Include="..\intf\hSymProvider.pas" />
+    <DCCReference Include="hCore.pas" />
+    <DCCReference Include="hStackWalk.pas" />
+    <DCCReference Include="uBreakpoints.pas" />
+    <DCCReference Include="uCore.pas" />
+    <DCCReference Include="uExcProviders.pas" />
+    <DCCReference Include="ufmBugFinder.pas">
+      <Form>fmBugFinder</Form>
+    </DCCReference>
+    <DCCReference Include="uModulesList.pas" />
+    <DCCReference Include="uSymProviders.pas" />
+    <DCCReference Include="uThreadsList.pas" />
+  </ItemGroup>
+</Project>

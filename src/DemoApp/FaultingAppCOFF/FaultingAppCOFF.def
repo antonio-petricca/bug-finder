@@ -1,0 +1,5 @@
+LIBRARY FaultingAppCoff
+
+EXPORTS
+     RaiseExceptionFromCoffDll
+     RaiseExceptionFromCoffDllByClass

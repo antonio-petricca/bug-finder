@@ -1,0 +1,10 @@
+__history/
+obj/
+*.dcu
+*.~*
+*.dsk
+*.log
+*.ilk
+*.lib
+*.identcache
+*.local

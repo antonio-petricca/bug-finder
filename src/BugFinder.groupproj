@@ -1,0 +1,124 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{5f3ae156-c441-4f80-9cc3-8fcc6154c162}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Projects Include="BfCfgWiz\BfCfgWiz.dproj" />
+    <Projects Include="BfConfig\BfConfig.dproj" />
+    <Projects Include="BugFinder\BugFinder.dproj" />
+    <Projects Include="DemoApp\FaultingAppTD32\FaultingAppTD32.dproj" />
+    <Projects Include="DemoApp\FaultingApp\FaultingApp.dproj" />
+    <Projects Include="Providers\Exceptions\ClrEP\ClrEP.dproj" />
+    <Projects Include="Providers\Exceptions\DelphiEP\DelphiEP.dproj" />
+    <Projects Include="Providers\Symbols\CoffSP\src\CoffSP.dproj" />
+    <Projects Include="Providers\Symbols\MapSP\MapSP.dproj" />
+    <Projects Include="Providers\Symbols\TD32SP\TD32SP.dproj" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+<BorlandProject xmlns=""><Default.Personality></Default.Personality></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="BfCfgWiz">
+    <MSBuild Projects="BfCfgWiz\BfCfgWiz.dproj" Targets="" />
+  </Target>
+  <Target Name="BfCfgWiz:Clean">
+    <MSBuild Projects="BfCfgWiz\BfCfgWiz.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="BfCfgWiz:Make">
+    <MSBuild Projects="BfCfgWiz\BfCfgWiz.dproj" Targets="Make" />
+  </Target>
+  <Target Name="BfConfig">
+    <MSBuild Projects="BfConfig\BfConfig.dproj" Targets="" />
+  </Target>
+  <Target Name="BfConfig:Clean">
+    <MSBuild Projects="BfConfig\BfConfig.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="BfConfig:Make">
+    <MSBuild Projects="BfConfig\BfConfig.dproj" Targets="Make" />
+  </Target>
+  <Target Name="BugFinder">
+    <MSBuild Projects="BugFinder\BugFinder.dproj" Targets="" />
+  </Target>
+  <Target Name="BugFinder:Clean">
+    <MSBuild Projects="BugFinder\BugFinder.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="BugFinder:Make">
+    <MSBuild Projects="BugFinder\BugFinder.dproj" Targets="Make" />
+  </Target>
+  <Target Name="FaultingApp">
+    <MSBuild Projects="DemoApp\FaultingApp\FaultingApp.dproj" Targets="" />
+  </Target>
+  <Target Name="FaultingApp:Clean">
+    <MSBuild Projects="DemoApp\FaultingApp\FaultingApp.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="FaultingApp:Make">
+    <MSBuild Projects="DemoApp\FaultingApp\FaultingApp.dproj" Targets="Make" />
+  </Target>
+  <Target Name="FaultingAppTD32">
+    <MSBuild Projects="DemoApp\FaultingAppTD32\FaultingAppTD32.dproj" Targets="" />
+  </Target>
+  <Target Name="FaultingAppTD32:Clean">
+    <MSBuild Projects="DemoApp\FaultingAppTD32\FaultingAppTD32.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="FaultingAppTD32:Make">
+    <MSBuild Projects="DemoApp\FaultingAppTD32\FaultingAppTD32.dproj" Targets="Make" />
+  </Target>
+  <Target Name="ClrEP">
+    <MSBuild Projects="Providers\Exceptions\ClrEP\ClrEP.dproj" Targets="" />
+  </Target>
+  <Target Name="ClrEP:Clean">
+    <MSBuild Projects="Providers\Exceptions\ClrEP\ClrEP.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="ClrEP:Make">
+    <MSBuild Projects="Providers\Exceptions\ClrEP\ClrEP.dproj" Targets="Make" />
+  </Target>
+  <Target Name="DelphiEP">
+    <MSBuild Projects="Providers\Exceptions\DelphiEP\DelphiEP.dproj" Targets="" />
+  </Target>
+  <Target Name="DelphiEP:Clean">
+    <MSBuild Projects="Providers\Exceptions\DelphiEP\DelphiEP.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="DelphiEP:Make">
+    <MSBuild Projects="Providers\Exceptions\DelphiEP\DelphiEP.dproj" Targets="Make" />
+  </Target>
+  <Target Name="CoffSP">
+    <MSBuild Projects="Providers\Symbols\CoffSP\src\CoffSP.dproj" Targets="" />
+  </Target>
+  <Target Name="CoffSP:Clean">
+    <MSBuild Projects="Providers\Symbols\CoffSP\src\CoffSP.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="CoffSP:Make">
+    <MSBuild Projects="Providers\Symbols\CoffSP\src\CoffSP.dproj" Targets="Make" />
+  </Target>
+  <Target Name="MapSP">
+    <MSBuild Projects="Providers\Symbols\MapSP\MapSP.dproj" Targets="" />
+  </Target>
+  <Target Name="MapSP:Clean">
+    <MSBuild Projects="Providers\Symbols\MapSP\MapSP.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="MapSP:Make">
+    <MSBuild Projects="Providers\Symbols\MapSP\MapSP.dproj" Targets="Make" />
+  </Target>
+  <Target Name="TD32SP">
+    <MSBuild Projects="Providers\Symbols\TD32SP\TD32SP.dproj" Targets="" />
+  </Target>
+  <Target Name="TD32SP:Clean">
+    <MSBuild Projects="Providers\Symbols\TD32SP\TD32SP.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="TD32SP:Make">
+    <MSBuild Projects="Providers\Symbols\TD32SP\TD32SP.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="BfCfgWiz;BfConfig;BugFinder;FaultingApp;FaultingAppTD32;ClrEP;DelphiEP;CoffSP;MapSP;TD32SP" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="BfCfgWiz:Clean;BfConfig:Clean;BugFinder:Clean;FaultingApp:Clean;FaultingAppTD32:Clean;ClrEP:Clean;DelphiEP:Clean;CoffSP:Clean;MapSP:Clean;TD32SP:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="BfCfgWiz:Make;BfConfig:Make;BugFinder:Make;FaultingApp:Make;FaultingAppTD32:Make;ClrEP:Make;DelphiEP:Make;CoffSP:Make;MapSP:Make;TD32SP:Make" />
+  </Target>
+  <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
+</Project>

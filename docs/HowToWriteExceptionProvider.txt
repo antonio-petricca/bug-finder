@@ -1,0 +1,55 @@
+-----
+Index
+-----
+
+0 - Introduction
+1 - Exception provider implementation
+2 - Exception provider debugging
+
+----------------
+0 - Introduction
+----------------
+
+Writing an exception provider can be a hard task, depending on the 
+development environment you need to support.
+
+----------------------------------
+1 - Exception provider implementation
+----------------------------------
+
+A exception provider is a DLL that implements a unique interface 
+(ISymbolProvider).
+
+To create a new one you must follow these few steps:
+
+ 1) create a DLL project;
+ 
+ 2) remove any default unit inclusion;
+ 
+ 3) include into the project the following files:
+ 
+    - intf/hSymProvider.pas
+    - intf/uSymProvider.pas
+   
+ 4) create a unit for your provider;
+
+ 5) extend the class TSymProvider with your own and implement the
+    two methods:
+
+    - QuerySymbol
+    - QueryAddress
+
+ 6) extend the class TSymProviderFactory with your own and implement
+    the method "AcceptModule".
+    
+ 7) in the initialization section register the factory by calling
+    the method "RegisterFactory".
+
+-----------------------------    
+2 - Exception provider debugging
+-----------------------------    
+
+Simply register it into a custom configuration file using BugFinder.exe
+as host application.
+
+That's all! :)    

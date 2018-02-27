@@ -1,0 +1,101 @@
+----------------------
+Section: Configuration
+----------------------
+
+ 1) AppFileName {REQUIRED; TYPE: String}
+ 
+    Application executable full path.
+    
+ 2) AppParameters {OPTIONS; TYPE: String}
+
+    Application command line parameters. 
+    
+--------------------------    
+Section: Symbols providers    
+--------------------------
+
+Place here an entry for each supported debug symbols type in the form:
+
+  <Descriptive name> = <DLL file name>
+  
+For further informations please read the document "How to write a symbol 
+provider". 
+
+----------------------------
+Section: Exception providers    
+----------------------------
+
+Place here an entry for each supported exception provider in the form:
+
+  <Descriptive name> = <DLL file name>
+  
+For further informations please read the document "How to write an exception
+provider". 
+
+----------------
+Section: Logging
+----------------
+
+ 1) LogViewLinesLimit {OPTIONAL; TYPE: Integer; DEFAULT: 1000}    
+
+    Limits of the log lines showed up into the log window to optimize
+    memory usage.
+
+ 2) LogFileName {OPTIONAL; TYPE: String; DEFAULT: "BugFinder.log"}    
+
+    Path of the log file.
+
+ 3) SpoolToFile {OPTIONAL; TYPE: Integer; DEFAULT: 1}    
+
+    Enable/Disable the logging feature.
+   
+ 4) LogFileRotation {OPTIONAL; TYPE: Integer; DEFAULT: 0}    
+
+    Set the log rotation policy:
+   
+    - 0 : Daily
+    - 1 : Weekly
+    - 2 : Monthly
+   
+ 5) SuppressBreakpointSourceDetails {OPTIONAL; TYPE: Integer; DEFAULT: 0}
+ 
+    Enable(0)/Disable(1) logging of tracing breakpoint source code debug symbols.
+    
+ 6) SuppressDllEvents {OPTIONAL; TYPE: Integer; DEFAULT: 0}  
+ 
+    Enable(0)/Disable(1) logging of DLLs loadind/unloading events.
+    
+ 7) SuppressOutputDebugStringEvents {OPTIONAL; TYPE: Integer; DEFAULT: 0}  
+ 
+    Enable(0)/Disable(1) logging of OutputDebugString API calls events.
+    
+ 8) SuppressProcessEvents {OPTIONAL; TYPE: Integer; DEFAULT: 0}  
+ 
+    Enable(0)/Disable(1) logging of debugged process creation/termination events.
+    
+ 9) SuppressThreadEvents {OPTIONAL; TYPE: Integer; DEFAULT: 0}    
+ 
+    Enable(0)/Disable(1) logging of threads creation/termination events.   
+
+ 10) StackDepth {OPTIONAL; TYPE: Integer; DEFAULT: 3}
+
+    Set the stack trace depth when exceptions are caught.
+
+ 11) PopUpOnErrors {OPTIONAL; TYPE: Integer; DEFAULT: 1}
+
+    Enable(1)/Disable(0) auto showing up of the log window when exceptions occur.
+
+--------------------   
+Section: Breakpoints
+--------------------   
+
+Place here an entry for each method call you want to trace in the form:
+
+ <Descriptive name> = <
+   "Binary module", 
+   "Source module",
+   "Method names"
+ >
+
+The above three parameters can be got by your source code or symbols
+debug table. 

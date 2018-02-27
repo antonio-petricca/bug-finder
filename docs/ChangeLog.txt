@@ -1,0 +1,211 @@
+------------------
+1.2.0 - 02/07/2013
+------------------
+
+  Fixes:
+  ------
+
+  - Exception trapped on call to SysErrorMessage
+
+  Minor changes:
+  --------------
+
+  - Demo application refactoring
+  - GUI style refresh
+  - SubVersion sources tree optimization
+
+  Known issues:
+  -------------
+
+  - Fix some Delphi exception handling on newer compiler releases (DelphiEP.dll)
+
+------------------
+1.1.1 - 29/03/2012
+------------------
+
+  Fixes:
+  ------
+
+  - Configuration wizard minor fixes
+  - Configuration loading error
+  - Minor bug fixes
+  - Setup demo application link parameter
+
+  Other changes: 
+  --------------
+
+  - Recompilation with more recent compiler
+  - Shared libraries upgrade (JVCL, LMD)
+
+------------------
+1.1.0 - 22/02/2008
+------------------
+
+  New features:
+  -------------
+
+  - Stack trace implementation
+  - Added parameter PopUpOnErrors to show up GUI on exceptions
+  - Configuration application update
+  - Demo application update
+
+  Fixes:
+  ------
+
+  - Fixed non continuable exceptions handling
+  - Configuration wizard minor fixes
+
+------------------
+1.0.0 - 21/02/2008
+------------------
+
+  New features:
+  -------------
+
+  - TD32/TDS symbols provider
+  - GUI icon change  
+
+  Fixes:
+  ------
+
+  - Fixed a bug in JclTd32.FindLine method
+  - Bug Finder closing when no ini file provider
+
+------------------
+0.9.0 - 10/02/2008
+------------------
+
+  New features:
+  -------------
+
+  - Configuration wizard
+  - Installation setup
+
+  Fixes:
+  ------
+
+  - GUI enhancements
+  - Code refactoring
+
+------------------
+0.8.0 - 06/02/2008
+------------------
+
+  New features:
+  -------------
+
+  - Coff/CodeView symbols format provider
+
+  Fixes:
+  ------
+
+  - Improvements to symbol providers interface
+  - Improvements to exception providers interface
+  - Providers upgrade accordingly to the above fix
+  - Project tree rearrangement
+  - Minor fixes
+
+------------------
+0.7.1 - 25/01/2008
+------------------
+
+  Fixes:
+  ------
+
+  - [MapSP.dll] Now can be set any breakpoint into the system unit
+  - Breakpoint formatting
+  - Source code refactoring
+  - Minor fixes
+
+------------------
+0.7.0 - 23/01/2008
+------------------
+
+  Fixes:
+  ------
+    
+  - Moved suppression switches from configuration to 
+    logging section
+  - Removed some compilation warnings 
+  - Decreased application size
+  - Source code refactoring
+  - Now during breakpoints loading does not stops to 
+    the first invalid entry
+  - Minor fixes  
+  
+  New features:
+  -------------
+  
+  - Exception provider architecture implementation
+  - Implemented Delphi exceptions provider
+  - Placed an attention icon on the tray icon when error
+    occurs. Open the log window to reset to the
+    default application icon
+
+------------------
+0.6.5 - 17/01/2008
+------------------
+
+- Access violation better explanation
+- Unknown exceptions better explanation
+- Fix in modules address space recognition
+- Module information extraction compatibility between NT/Win9x
+- Fix to code entry point detection
+
+------------------
+0.6.0 - 14/01/2008
+------------------
+
+  Fixes:
+  ------
+  
+  - Breakpoints single step location find fix
+  - Minor fixes
+  
+  New features:
+  -------------
+  
+  - Symbol providers plugin architecture implementation
+  - Map Symbols files plugin implementation
+
+------------------
+0.5.0 - 11/01/2008
+------------------
+
+- Added parameter "LogViewLinesLimit"
+- Added parameter "LogFileName"
+- Added parameter "LogFileRotation" { Daily = 0, Weekly = 1, Monthly = 2 }
+- Better exception explanation
+
+--------------------
+0.4.0.7 - 09/01/2008
+--------------------
+
+- Changed project name to BugFinder
+
+- Added About box
+- Changed some configuration parameter name
+- Added new suppression parameters
+- Added application command line parameter
+- Changed suppression parameters default to "false"
+- Fixed bug in removing deallocated DLLs
+
+--------------------
+0.3.0.5 - 08/01/2008
+--------------------
+
+- Code refactoring
+- CreateProcess path parameter fix
+- Customization of the JclDebug unit to get reverse 
+  access to MAP file debug symbols
+- Tracing breakpoints implementation
+- Improved debug loop
+- Added option "BreakpointSourceDetailsDisable"
+- Fixed modules address detection
+- Minor GUI improvements
+
+--------------------
+0.2.0.3 - 05/01/2008
+--------------------
+
+- Fixed an integer overflow in the class TModulesList

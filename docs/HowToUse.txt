@@ -1,0 +1,159 @@
+-----
+Index
+-----
+
+1 - Introduction
+2 - Benefits of Bug Finder
+3 - Open symbols architecture
+4 - Exception providers architecture
+5 - Bug Finder command line and configuration
+6 - Preparing the application for bug finding
+7 - Running Bug Finder
+
+----------------
+1 - Introduction
+----------------
+
+Often programs crashes without any message or advice, also if you correctly
+trapped exceptions by using the canonical try/except block statements.
+
+This kind of problems are caused sometimes by unrecoverable exceptions like
+some type of memory access violations, stack overflows and so on.
+
+In this situations is difficult or impossibile to know where the exception
+was, also if you have installed into your application any of the exception
+fault catcher libraries as you can find many of them on the net.
+
+The only chance to get enough informations to solve the problem is to 
+debug the program into your development environment. Unfortunately this is
+not possibile in production contexts, especially when the fault does not
+show up itself in the development environment.
+
+With bug finder you get all the benefits of a win32 debugger without to have
+to install the development tools in the production environment.
+
+--------------------------
+2 - Benefits of Bug Finder
+--------------------------
+
+The benefits of the Bug Finder are listed below:
+
+ 1) BF is a real win32 debug with no user interaction needs;
+ 
+ 2) BF catches all kind of exceptions into the debugged process providing for
+    them:
+    
+    - exception address;
+    
+    - binary module reference;
+    
+    - if exception is a Delphi exception BF rebuilds exception informations
+      providing class name and exception message of the Delphi exception object;
+      
+    - if debug symbols are available (see paragraph "Open symbols architecture")
+      BF provides:
+       
+      - source file name
+      - source module
+      - class/method name
+      - line number
+      
+      where the error occured;
+      
+  3) BF intercepts the calls to the OutputDebugString API placed by the 
+     developer into the application;
+     
+  4) the user can place breakpoint on designated methods to trace their flow
+     during the application execution simply putting their definition into
+     the configuration file (see paragraph "Open symbols architecture" and
+     document "Configuration switches");
+     
+  5) if you need BF logs any kind of information into a given log file giving
+     you the opportunity to specify a log file rotation policy (daily, weekly,
+     monthly) to better organize tracing informations.
+
+-----------------------------     
+3 - Open symbols architecture
+-----------------------------
+
+Bug Finder get most of the informations it needs by the symbol tables provided
+with the application binaries.
+
+Each compiler vendor publish the debug symbols in a specific way, Borland for
+example produces MAP files or link TD32 symbols, Microsoft provides them also 
+in COFF file format, and so on...
+
+BF exposes its services by an open pluggable architecture which permits to 
+write and support any kind of symbol tables simply writing a plug-in and 
+registering it into the configuration file.
+
+The symbols table are needed not only to decode exceptions, but also to place
+tracing breakpoints at specific memory locations. Missing disable the 
+breakpoints tracing feature.
+
+To know how to implement a symbols provider please read the document "How to
+write Symbol Provider".
+
+------------------------------------
+4 - Exception providers architecture
+------------------------------------
+
+As for the symbols the user can provide a custom exception provider.
+
+Each development environment extends the Win32 exceptions set providing
+a new one.
+
+By the custom exception providers you can decode them extending the
+capabilities of the Bug Finder.
+
+To know how to implement a symbols provider please read the document "How to
+write Exception Provider".
+
+---------------------------------------------
+5 - Bug Finder command line and configuration
+---------------------------------------------
+
+Bug Finder accepts only one optional command line parameter: the full path to
+the configuration file.
+
+If missed, it assumes it to be the file "BugFinder.ini".
+
+To configure BF appropriately please refer to the document "Configuration
+switches".
+
+---------------------------------------------
+6 - Preparing the application for bug finding
+---------------------------------------------
+
+Preparing your application for Bug Finder is absolutely simple:
+
+ - if you need place how many OutputDebugString calls you want in the
+   application executable or linked dlls;
+   
+ - compile the modules with the preferred (supported) symbols table;
+ 
+ - write a configuration file (see document "Configuration switches") with
+   these basic options:
+   
+   - Configuration      : AppFileName = { Your application full path }   
+   - ExceptionProviders : { e.g. DelphiEP = DelphiEP.dll for Delphi exceptions }
+   - SymbolProviders    : { e.g. MapFile = MapSP.dll for Borland MAP files }
+   - Logging            : LogFileName = { What you want to write to }
+   - Logging            : SpoolToFile = 1
+   - Breakpoints        : { if you want to trace a particular method calls }
+
+----------------------   
+7 - Running Bug Finder 
+----------------------
+
+To run Bug Finder you need simply to pass to it by its command line the full 
+path of the configuration file created at the previous step.
+
+Running it an icon will be placed into the tray icons area giving you the
+opportunity with a right mouse click to show up the log view or to stop and 
+exit the debugged process.
+
+After stopping the process you can read all the trapped information by open
+the produced log file.
+
+That's all! :)
