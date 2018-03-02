@@ -36,6 +36,8 @@ The Bug Finder will solve the problem.
 For Delphi applications compiled with a detailed debug map files it will get
 also information about the location of the exceptions in the source code.
 
+You can find a detail article about it at https://www.codeproject.com/Articles/602794/Bug-Finder-A-Real-Win-Extensible-Passive-Debugger .
+
 ----------------
 More information
 ----------------
