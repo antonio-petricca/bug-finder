@@ -22,8 +22,8 @@ type
   end;
 
   ISymbolProvider = interface(IUnknown)
-    function QuerySymbol(ARawAddress, ARelativeAddress: DWORD): ISymbol; 
     function QueryAddress(AUnitName, AProcName: PChar; ACodeBase: DWORD; out AAddress: DWORD): BOOL;
+    function QuerySymbol(ARawAddress, ARelativeAddress: DWORD): ISymbol; 
     function QuerySymbolProps(AUnitName, AProcName: PChar; ACodeBase: DWORD; out AAddress, ASize, ADebugStart, ADebugEnd: DWORD): BOOL;
   end;
 
