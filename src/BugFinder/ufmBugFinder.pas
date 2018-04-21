@@ -27,9 +27,9 @@ uses
   System.ImageList,
   SysUtils,
   uCore,
+  uDebugThread,
   uUtils,
-  Windows
-  uDebugThread;
+  Windows;
 
 type
   TfmBugFinder = class(TForm)
