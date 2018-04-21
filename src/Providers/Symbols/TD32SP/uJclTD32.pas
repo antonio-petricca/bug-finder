@@ -31,10 +31,8 @@ begin
   Result  := 0;
 
   ModAddr := ModuleStartFromName(AUnitName);
-  if (ModAddr <> DWORD(-1)) then
-  begin
-    with TD32Scanner do
-    begin
+  if (ModAddr <> DWORD(-1)) then begin
+    with TD32Scanner do begin
       for I := 0 to (ProcSymbolCount - 1) do begin
         Proc := ProcSymbols[I];
 
@@ -94,11 +92,9 @@ var
 begin
   Result := AProcName;
   
-  if (Length(AProcName) > 0) and (AProcName[1] = '@') then
-  begin
+  if (Length(AProcName) > 0) and (AProcName[1] = '@') then begin
     pchSecondAt := StrScan(PChar(Copy(AProcName, 2, Length(AProcName) - 1)), '@');
-    if pchSecondAt <> nil then
-    begin
+    if pchSecondAt <> nil then begin
       Inc(pchSecondAt);
       Result := pchSecondAt;
       P := PChar(Result);
