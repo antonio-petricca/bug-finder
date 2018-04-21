@@ -4,7 +4,7 @@ interface
 
 uses
   Classes,
-  Controls,
+  Vcl.Controls,
   Dialogs,
   ExtCtrls,
   Forms,
@@ -13,7 +13,9 @@ uses
   ShellApi,
   StdCtrls,
   SysUtils,
-  Windows, jpeg;
+  System.UITypes,
+  Windows,
+  jpeg;
 
 type
   TfmFaultingThread = class(TThread)

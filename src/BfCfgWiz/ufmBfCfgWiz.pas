@@ -34,7 +34,7 @@ uses
   SysUtils,
   uLog,
   uLogRotator,
-  Windows;
+  Windows, System.Actions;
 
 type
   TfmBfCfgWiz = class(TForm)

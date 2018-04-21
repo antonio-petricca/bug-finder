@@ -8,3 +8,8 @@ obj/
 *.lib
 *.identcache
 *.local
+libs/*
+bin/*
+*.ico
+*.stat
+*.map

@@ -12,5 +12,5 @@ uses
 
 begin
   Application.Initialize;
-  Configure(0, 0, PChar(ParamStr(1)), 0);
+  Configure(0, 0, PAnsiChar(ParamStr(1)), 0);
 end.

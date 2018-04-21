@@ -27,7 +27,7 @@ uses
   SysUtils,
   uCore,
   uUtils,
-  Windows;
+  Windows, System.ImageList;
 
 type
   TDebugThread = class(TThread)
@@ -336,7 +336,7 @@ end;
 
 procedure TfmBugFinder.miEditCfgClick(Sender: TObject);
 begin
-  Configure(0, 0, PChar(FDebugger.Core.IniFileName), 0);
+  Configure(0, 0, PAnsiChar(FDebugger.Core.IniFileName), 0);
   MessageDlg('Please restart Bug Finder to apply changes.', mtInformation, [mbOK], 0);
 end;
 

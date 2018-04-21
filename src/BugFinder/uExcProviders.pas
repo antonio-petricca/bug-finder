@@ -42,6 +42,9 @@ type
 
 implementation
 
+uses
+  System.Classes;
+
 { TExceptionProviderItem }
 
 constructor TExceptionProviderItem.Create(AHandle: THandle; const AName, AFileName: String; AFactory: TGetExceptionProviderFunc);
