@@ -12,8 +12,8 @@ type
   protected
     function FormatProcName(const AProcName: String): String;
   public
-    procedure AddressSizeFromProcName(const AUnitName, AProcName: String; out AAddress, ASize, ADebugStart, ADebugEnd: DWORD);
     function AddressFromProcName(const AUnitName, AProcName: String): DWORD;
+    procedure AddressSizeFromProcName(const AUnitName, AProcName: String; out AAddress, ASize, ADebugStart, ADebugEnd: DWORD);
     function ModuleStartFromName(const AModuleName: String): DWORD;
   end;
 
@@ -43,6 +43,43 @@ begin
 
           if SameText(AProcName, ProcName) then begin
             Result := Proc.Offset;
+            Break;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TJclPeBorTD32ImageEx.AddressSizeFromProcName(const AUnitName,
+  AProcName: String; out AAddress, ASize, ADebugStart, ADebugEnd: DWORD);
+var
+  I        : Integer;
+  ModAddr  : DWORD;
+  Proc     : TJclProcSymbolInfo;
+  ProcName : String;
+begin
+  AAddress    := 0;
+  ADebugStart := 0;
+  ADebugEnd   := 0;
+  ASize       := 0;
+
+  ModAddr := ModuleStartFromName(AUnitName);
+  if (ModAddr <> DWORD(-1)) then
+  begin
+    with TD32Scanner do
+    begin
+      for I := 0 to (ProcSymbolCount - 1) do begin
+        Proc := ProcSymbols[I];
+
+        if (Proc.Offset >= ModAddr) then begin
+          ProcName := FormatProcName(Names[Proc.NameIndex]);
+
+          if SameText(AProcName, ProcName) then begin
+            ASize       := Proc.Size;
+            AAddress    := Proc.Offset;
+            ADebugStart := Proc.DebugStart;
+            ADebugEnd   := Proc.DebugEnd;
             Break;
           end;
         end;
@@ -94,43 +131,6 @@ begin
         Break;
       end;
     end;
-end;
-
-procedure TJclPeBorTD32ImageEx.AddressSizeFromProcName(const AUnitName,
-  AProcName: String; out AAddress, ASize, ADebugStart, ADebugEnd: DWORD);
-var
-  I        : Integer;
-  ModAddr  : DWORD;
-  Proc     : TJclProcSymbolInfo;
-  ProcName : String;
-begin
-  AAddress  := 0;
-  ASize     := 0;
-  ADebugStart := 0;
-  ADebugEnd := 0;
-
-  ModAddr := ModuleStartFromName(AUnitName);
-  if (ModAddr <> DWORD(-1)) then
-  begin
-    with TD32Scanner do
-    begin
-      for I := 0 to (ProcSymbolCount - 1) do begin
-        Proc := ProcSymbols[I];
-
-        if (Proc.Offset >= ModAddr) then begin
-          ProcName := FormatProcName(Names[Proc.NameIndex]);
-
-          if SameText(AProcName, ProcName) then begin
-            ASize := Proc.Size;
-            AAddress := Proc.Offset;
-            ADebugStart := Proc.DebugStart;
-            ADebugEnd := Proc.DebugEnd;
-            Break;
-          end;
-        end;
-      end;
-    end;
-  end;
 end;
 
 end.
