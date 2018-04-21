@@ -9,13 +9,13 @@ uses
   ExtCtrls,
   Forms,
   Graphics,
+  jpeg,
   Messages,
   ShellApi,
   StdCtrls,
-  SysUtils,
   System.UITypes,
-  Windows,
-  jpeg;
+  SysUtils,
+  Windows;
 
 type
   TfmFaultingThread = class(TThread)
