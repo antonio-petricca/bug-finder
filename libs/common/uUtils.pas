@@ -7,7 +7,7 @@ uses
   Controls,
   Dialogs,
   hUtils,
-  SysUtils,
+  System.SysUtils,
   Windows;
 
 function  AreYouSure: Boolean;
@@ -18,6 +18,9 @@ function  GetQuickAppVersionInfo(AAppNamePath: String = ''): String;
 function  IsOsWin32: Boolean;
 
 implementation
+
+uses
+  AnsiStrings, System.UITypes;
 
 function GetAppVersionInfo(var AFileVErsionInfo: TFileVersionInfo; AAppNamePath: String): Boolean;
 var
@@ -38,7 +41,7 @@ var
     ;
 
     if VerQueryValue(VerBuf, PChar(VerKey), VerBufValue, VerBufLen) then
-      Result := StrPas(VerBufValue);
+      Result := AnsiStrings.StrPas(PAnsiChar(VerBufValue));
   end;
 
   function QueryValue(const AValue: String): String;

@@ -7,7 +7,7 @@ uses
   PsApi,
   SysUtils,
   TlHelp32,
-  Windows;
+  Winapi.Windows;
 
 function GetModuleCodeBase(AProcess: THandle; AModuleAsPtr: Pointer; out ACodeBase: DWORD): Boolean;
 function GetModuleHeader(AProcess: THandle; AModuleAsPtr: Pointer; AImageNTHeaders: PImageNtHeaders): Boolean;
@@ -17,17 +17,18 @@ function GetProcessModuleFileName(AProcess: THandle; AFile: THandle): String;
 function GetProcessModuleFileNameEx(APID: DWORD; const AModuleName: String): String;
 function GetProcessModuleName(AProcess: THandle; AModuleAsPtr: Pointer): String;
 function GetThreadHandleByID(AThreadId: DWORD): THandle;
-function ReadProcMem(AProcess: THandle; AProcMem, ALocalMem: Pointer; ASize: DWORD): Boolean;
+function ReadProcMem(AProcess: THandle; AProcMem, ALocalMem: Pointer; ASize: SIZE_T): BOOL;
 function SearchModulePath(const AModuleName: String): String;
-function WriteProcMem(AProcess: THandle; AProcMem, ALocalMem: Pointer; ASize: DWORD): Boolean;
+function WriteProcMem(AProcess: THandle; AProcMem, ALocalMem: Pointer; ASize: SIZE_T): Boolean;
 
 implementation
 
-function ReadProcMem(AProcess: THandle; AProcMem, ALocalMem: Pointer; ASize: DWORD): Boolean;
+function ReadProcMem(AProcess: THandle; AProcMem, ALocalMem: Pointer; ASize: SIZE_T): BOOL;
+
 var
-  dwRead : DWORD;
+  dwRead : SIZE_T;
 begin
-  Result := ReadProcessMemory(
+  Result := Winapi.Windows.ReadProcessMemory(
     AProcess,
     AProcMem,
     ALocalMem,
@@ -67,7 +68,7 @@ begin
     then begin
       SetLength(Str, 64);
       if ReadProcMem(AProcess, Pointer(DWORD(AModuleAsPtr) + IED.Name), @Str[1], 64) then
-        Result := StrPas(PChar(Str));
+        Result := StrPas(PAnsiChar(Str));
     end;
   end;
 end;
@@ -170,7 +171,7 @@ begin
   repeat
     { Copy the drive letter to the template string }
 
-    Byte(szDrive[0]) := lpTemp^;
+    szDrive[0] := Char(lpTemp^);
 
     { Look up each device name }
 
@@ -269,9 +270,9 @@ begin
   CloseHandle(hSnap);
 end;
 
-function WriteProcMem(AProcess: THandle; AProcMem, ALocalMem: Pointer; ASize: DWORD): Boolean;
+function WriteProcMem(AProcess: THandle; AProcMem, ALocalMem: Pointer; ASize: SIZE_T): Boolean;
 var
-  dwWrote : DWORD;
+  dwWrote : SIZE_T;
 begin
   Result := WriteProcessMemory(
     AProcess,

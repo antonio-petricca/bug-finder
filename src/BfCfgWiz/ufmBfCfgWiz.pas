@@ -31,6 +31,7 @@ uses
   Mask,
   Messages,
   StdCtrls,
+  System.Actions,
   SysUtils,
   uLog,
   uLogRotator,

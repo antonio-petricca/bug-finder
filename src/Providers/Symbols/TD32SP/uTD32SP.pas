@@ -30,8 +30,9 @@ type
     FHandle    : THandle;
     FTd32Infos : TJclPeBorTD32ImageEx;
   protected
-    function    QuerySymbol(ARawAddress, ARelativeAddress: DWORD): ISymbol; override;
     function    QueryAddress(AUnitName, AProcName: PChar; ACodeBase: DWORD; out AAddress: DWORD): BOOL; override;
+    function    QuerySymbol(ARawAddress, ARelativeAddress: DWORD): ISymbol; override;
+    function    QuerySymbolProps(AUnitName, AProcName: PChar; ACodeBase: DWORD; out AAddress, ASize, ADebugStart, ADebugEnd: DWORD): BOOL; override;
   public
     constructor Create(
       const AServices   : ICoreServices;
@@ -129,6 +130,15 @@ begin
         nfoLnNo
       );
     end;
+end;
+
+
+function TTD32SP.QuerySymbolProps(AUnitName, AProcName: PChar; ACodeBase: DWORD; out AAddress, ASize, ADebugStart, ADebugEnd: DWORD): BOOL;
+begin
+  FTd32Infos.AddressSizeFromProcName(AUnitName, AProcName, AAddress, ASize, ADebugStart, ADebugEnd);
+  Result   := (AAddress > 0);
+  if Result then
+    AAddress := AAddress + GetModuleBase + ACodeBase;
 end;
 
 begin

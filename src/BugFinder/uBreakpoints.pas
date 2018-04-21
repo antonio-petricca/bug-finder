@@ -20,6 +20,9 @@ type
   TBreakpoint = class(TObject)
   private
     FAddress  : DWORD;
+    FDebugStart: DWORD;
+    FDebugEnd  : DWORD;
+    FSize     : DWORD;
     FByteData : Byte;
     FMethod   : String;
     FModule   : String;
@@ -33,11 +36,14 @@ type
     function    Activate(AProcess: THandle): Boolean;
     function    Resume(AThreadId: THandle): Boolean;
 
-    property    Address  : DWORD  read FAddress;
+    property    Address  : DWORD  read FAddress write FAddress;
     property    Method   : String read FMethod;
     property    Module   : String read FModule;
     property    Name     : String read FName;
     property    UnitName : String read FUnitName;
+    property    DebugStart: DWORD  read FDebugStart write FDebugStart;
+    property    DebugEnd : DWORD  read FDebugEnd write FDebugEnd;
+    property    Size     : DWORD  read FSize write FSize;
 
     property    ByteData : Byte   read FByteData;
   end;
@@ -164,16 +170,26 @@ end;
 function TBreakPoints.ValidateBP(const ASymProvider: ISymbolProvider; const AName, AModule, AUnit, AMethod: String; AModuleCodeBase: DWORD): TBreakpoint;
 var
   Address : DWORD;
+  Size: DWORD;
+  DebugStart: DWORD;
+  DebugEnd: DWORD;
 begin
   if not Assigned(ASymProvider) then
     Address := 0
   else
-    ASymProvider.QueryAddress(PChar(AUnit), PChar(AMethod), AModuleCodeBase, Address);
+  begin
+    ASymProvider.QuerySymbolProps(PChar(AUnit), PChar(AMethod), AModuleCodeBase, Address, Size, DebugStart, DebugEnd);
+  end;
 
   if (Address <= 0) then
     Result := nil
   else
+  begin
     Result  := TBreakpoint.Create(FThreads, AName, AModule, AUnit, AMethod, Address);
+    Result.Size := Size;
+    Result.DebugStart := DebugStart;
+    Result.DebugEnd := DebugEnd;
+  end;
 end;
 
 

@@ -31,7 +31,7 @@ function hlpInitialize(AProcess, AFile: THandle; const AModuleName: String; ABas
 begin                     
   SymSetOptions(SYMOPT_UNDNAME or SYMOPT_DEFERRED_LOADS or SYMOPT_LOAD_LINES);
   Result := SymInitialize(AProcess, nil, False);
-  Result := Result and SymLoadModule(AProcess, 0, PChar(AModuleName), nil, ABaseAddress, 0);
+  Result := Result and SymLoadModule(AProcess, 0, PAnsiChar(AModuleName), nil, ABaseAddress, 0);
 end;
 
 procedure hlpFinalize(AProcess: THandle; ABaseAddress: DWORD);

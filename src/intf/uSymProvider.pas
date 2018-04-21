@@ -38,6 +38,8 @@ type
 
     function    QuerySymbol(ARawAddress, ARelativeAddress: DWORD): ISymbol; virtual; abstract;
     function    QueryAddress(AUnitName, AProcName: PChar; ACodeBase: DWORD; out AAddress: DWORD): BOOL; virtual; abstract;
+    function    QuerySymbolProps(AUnitName, AProcName: PChar; ACodeBase: DWORD; out AAddress, ASize, ADebugStart, ADebugEnd: DWORD): BOOL; virtual; abstract;
+
   public
     constructor Create(
       const AServices   : ICoreServices;

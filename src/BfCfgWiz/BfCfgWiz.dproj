@@ -21,6 +21,7 @@
     <DCC_DcuOutput>..\..\dcu</DCC_DcuOutput>
     <DCC_ObjOutput>..\..\dcu</DCC_ObjOutput>
     <DCC_HppOutput>..\..\dcu</DCC_HppOutput>
+    <DCC_UnitSearchPath>..\..\dcu;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>    
     <DCC_Define>RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -33,6 +34,7 @@
     <DCC_DcuOutput>..\..\dcu</DCC_DcuOutput>
     <DCC_ObjOutput>..\..\dcu</DCC_ObjOutput>
     <DCC_HppOutput>..\..\dcu</DCC_HppOutput>
+    <DCC_UnitSearchPath>..\..\dcu;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>    
     <DCC_Define>DEBUG</DCC_Define>
   </PropertyGroup>
   <ProjectExtensions>

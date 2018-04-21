@@ -26,7 +26,8 @@ uses
   hBfCfgWiz in '..\intf\hBfCfgWiz.pas',
   hStackWalk in 'hStackWalk.pas',
   hDebugUtils in '..\..\libs\common\hDebugUtils.pas',
-  uDebugUtils in '..\..\libs\common\uDebugUtils.pas';
+  uDebugUtils in '..\..\libs\common\uDebugUtils.pas',
+  uDebugThread in 'uDebugThread.pas';
 
 begin
   Application.Initialize;
