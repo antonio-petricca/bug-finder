@@ -31,10 +31,11 @@ uses
   Mask,
   Messages,
   StdCtrls,
+  System.Actions,
   SysUtils,
   uLog,
   uLogRotator,
-  Windows, System.Actions;
+  Windows;
 
 type
   TfmBfCfgWiz = class(TForm)
