@@ -24,10 +24,11 @@ uses
   Menus,
   Messages,
   StdCtrls,
+  System.ImageList,
   SysUtils,
   uCore,
   uUtils,
-  Windows, System.ImageList,
+  Windows
   uDebugThread;
 
 type
