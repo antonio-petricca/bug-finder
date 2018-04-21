@@ -250,7 +250,7 @@ end;
 
 class function TLogFile.GetLogDateTime: String;
 begin
-  Result := FormatDateTime('DD/MM/YYYY HH:NN:SS', Now);
+  Result := FormatDateTime('DD/MM/YYYY HH:NN:SS:zzz', Now);
 end;
 
 class function TLogFile.GetModuleFileName: String;

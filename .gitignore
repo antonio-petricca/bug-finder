@@ -13,3 +13,6 @@ bin/*
 *.ico
 *.stat
 *.map
+*.otares
+*.res
+*.dproj

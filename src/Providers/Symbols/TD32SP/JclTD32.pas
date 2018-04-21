@@ -665,12 +665,16 @@ type
     FNameIndex: DWORD;
     FOffset: DWORD;
     FSize: DWORD;
+    FDebugEnd: DWORD;
+    FDebugStart: DWORD;
   protected
     constructor Create(pSymInfo: PSymbolInfo); override;
   public
     property NameIndex: DWORD read FNameIndex;
     property Offset: DWORD read FOffset;
     property Size: DWORD read FSize;
+    property DebugEnd: DWORD read FDebugEnd;
+    property DebugStart: DWORD read FDebugStart;
   end;
 
   TJclLocalProcSymbolInfo = class(TJclProcSymbolInfo);
@@ -998,6 +1002,8 @@ begin
     FNameIndex := Proc.NameIndex;
     FOffset := Proc.Offset;
     FSize := Proc.Size;
+    FDebugEnd := Proc.DebugEnd;
+    FDebugStart := Proc.DebugStart;
   end;
 end;
 
@@ -1169,10 +1175,10 @@ end;
 procedure TJclTD32InfoParser.AnalyseNames(const pSubsection: Pointer; const Size: DWORD);
 var
   I, Count, Len: Integer;
-  pszName: PChar;
+  pszName: PAnsiChar;
 begin
   Count := PDWORD(pSubsection)^;
-  pszName := PChar(DWORD(pSubsection) + SizeOf(DWORD));
+  pszName := PAnsiChar(DWORD(pSubsection) + SizeOf(DWORD));
   if Count > 0 then
   begin
     FNames.Capacity := FNames.Capacity + Count;
@@ -1387,7 +1393,7 @@ end;
 
 function TJclTD32InfoParser.GetName(const Idx: Integer): string;
 begin
-  Result := PChar(FNames.Items[Idx]);
+  Result := String(PAnsiChar(FNames.Items[Idx]));
 end;
 
 function TJclTD32InfoParser.GetNameCount: Integer;

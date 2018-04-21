@@ -93,7 +93,7 @@ begin
         MaxNameLength := MAX_SYM_NAME;
       end;
 
-      Result := SymGetSymFromName(FServices.Process, PChar(AProcName), Symbol);
+      Result := SymGetSymFromName(FServices.Process, PAnsiChar(AProcName), Symbol);
       if Result then
         AAddress := Symbol^.Address;
     finally
@@ -136,7 +136,7 @@ begin
       dwDispl := 0; { Optional for SymGetSymFromAddr }
 
       if SymGetSymFromAddr(FServices.Process, ARawAddress, @dwDispl, Symbol) then begin
-        symName := Trim(StrPas(@Symbol^.Name));
+        symName := Trim(StrPas(PAnsiChar(@Symbol^.Name)));
 
         { Line }
 
