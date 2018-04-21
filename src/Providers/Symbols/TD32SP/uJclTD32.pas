@@ -49,8 +49,7 @@ begin
   end;
 end;
 
-procedure TJclPeBorTD32ImageEx.AddressSizeFromProcName(const AUnitName,
-  AProcName: String; out AAddress, ASize, ADebugStart, ADebugEnd: DWORD);
+procedure TJclPeBorTD32ImageEx.AddressSizeFromProcName(const AUnitName, AProcName: String; out AAddress, ASize, ADebugStart, ADebugEnd: DWORD);
 var
   I        : Integer;
   ModAddr  : DWORD;
