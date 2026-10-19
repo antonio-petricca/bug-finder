@@ -30,6 +30,18 @@ type
 
 implementation
 
+const
+  CP_UTF16           = 1200;
+  MAX_MESSAGE_LENGTH = 65536;
+
+type
+  TStrRecHeader = packed record
+    CodePage : Word;
+    ElemSize : Word;
+    RefCount : Longint;
+    Length   : Longint;
+  end;
+
 { TDelphiEPFactory }
 
 function TDelphiEPFactory.AcceptException(const AServices: ICoreServices; AException: PExceptionRecord; out AProvider: IExceptionProvider): Boolean;
@@ -102,15 +114,15 @@ end;
 
 function TDelphiEP.GetExceptionDescription(AProcess: THandle; AExceptionObject: Pointer): String;
 var
-  dwSize : DWORD;
-  lpMsg  : Pointer;
-  lpSize : PDWORD;
-  lpVars : Pointer;
-  szMsg  : PChar;
+  AnsiMsg : AnsiString;
+  dwLen   : Longint;
+  Header  : TStrRecHeader;
+  lpMsg   : Pointer;
+  lpVars  : Pointer;
+  WideMsg : WideString;
 begin
   Result := 'Unknown!';
   lpVars := Pointer(DWORD(AExceptionObject) + SizeOf(Pointer) { VMT ptr } );
-
 
   {
 
@@ -121,32 +133,57 @@ begin
       ...
     end;
 
+    Exception.FMessage is the first field after the VMT pointer.
+
+    String header, located immediately before the characters data:
+
+      Delphi 2009+ (12 bytes):   CodePage (Word, -12), ElemSize (Word, -10), RefCount (Longint, -8), Length (Longint, -4)
+      Delphi pre-2009 (8 bytes): RefCount (Longint, -8), Length (Longint, -4)
+
+    Length is expressed in characters in both cases.
+
   }
 
-  if ReadProcMem(AProcess, lpVars, @lpMsg, SizeOf(Pointer)) then begin
-    lpSize := PDWORD(DWORD(lpMsg) - 4 { AnsiString length offset } );
-    szMsg  := nil;
+  if not ReadProcMem(AProcess, lpVars, @lpMsg, SizeOf(Pointer)) then
+    Exit;
 
-    if ReadProcMem(AProcess, lpSize, @dwSize, SizeOf(DWORD)) then
-      if (dwSize > 0) then
-        try
-          szMsg := StrAlloc(dwSize + 1);
+  if not Assigned(lpMsg) then begin
+    Result := '';
+    Exit;
+  end;
 
-          if ReadProcMem(AProcess, lpMsg, szMsg, dwSize) then begin
-            PByte(DWORD(szMsg) + dwSize)^ := 0;
-            Result                        := StrPas(szMsg);
-          end;
+  { Message length }
 
-        finally
+  if not ReadProcMem(AProcess, Pointer(DWORD(lpMsg) - 4), @dwLen, SizeOf(Longint)) then
+    Exit;
 
-          try
-            if Assigned(szMsg) then
-              StrDispose(szMsg);
-          except
-          end;
+  if (dwLen = 0) then begin
+    Result := '';
+    Exit;
+  end;
 
-        end;
+  if (dwLen < 0) or (dwLen > MAX_MESSAGE_LENGTH) then
+    Exit;
 
+  { Message data }
+
+  if ReadProcMem(AProcess, Pointer(DWORD(lpMsg) - SizeOf(TStrRecHeader)), @Header, SizeOf(TStrRecHeader)) and
+     (Header.CodePage = CP_UTF16) and
+     (Header.ElemSize = SizeOf(WideChar))
+  then begin
+    { UnicodeString }
+
+    SetLength(WideMsg, dwLen);
+
+    if ReadProcMem(AProcess, lpMsg, PWideChar(WideMsg), dwLen * SizeOf(WideChar)) then
+      Result := WideMsg;
+  end else begin
+    { AnsiString }
+
+    SetLength(AnsiMsg, dwLen);
+
+    if ReadProcMem(AProcess, lpMsg, PAnsiChar(AnsiMsg), dwLen) then
+      Result := String(AnsiMsg);
   end;
 end;
 

@@ -1,4 +1,21 @@
 ------------------
+1.2.1 - 20/10/2026
+------------------
+
+  Fixes:
+  ------
+
+  - Wrong thread id passed to the generic exception handler
+  - Double ContinueDebugEvent call on exception events
+  - Divide by zero, illegal/privileged instruction etc. no longer re-executed forever (now passed to the application)
+  - First/second chance exception reporting
+  - "%" characters in exception/breakpoint messages no longer break log formatting
+  - Empty log lines sent to the GUI when SpoolToFile is disabled
+  - Pending breakpoint tracked per thread instead of globally
+  - Delphi exception messages read correctly for both AnsiString and UnicodeString
+  - Wrong module names in the sample BugFinder.ini breakpoints
+
+------------------
 1.2.0 - 02/07/2013
 ------------------
 

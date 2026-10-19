@@ -43,8 +43,8 @@ type
     FStopped      : Boolean;
     FThreads      : TThreadsList;
 
+    FFirstChance : Boolean;
     FIsStartBP   : Boolean;
-    FLastBP      : TBreakpoint;
 
     function    LoadBreakpoints(const AModuleName: String; ASymProvider: ISymbolProvider; AModuleCodeBase: DWORD): Boolean;
     function    LoadExceptionProviders: Boolean;
@@ -52,12 +52,13 @@ type
 
     function    AcquireDebugPrivilege: Boolean;
     procedure   Debug;
+    function    EscapeFormat(const AText: String): String;
 
     procedure   HandleEvent_BreakPoint(ARawAddress, ARelativeAddress: DWORD; AException: PExceptionRecord; AThreadID: DWORD);
-    procedure   HandleEvent_BreakPoint_SingleStep(ADbgAddr: DWORD);
+    procedure   HandleEvent_BreakPoint_SingleStep(ADbgAddr: DWORD; AThreadId: DWORD);
     procedure   HandleEvent_CreatedProcess(AInfos: PCreateProcessDebugInfo; AThreadId: DWORD);
     procedure   HandleEvent_CreatedThread(AInfos: PCreateThreadDebugInfo; AThreadId: DWORD);
-    function    HandleEvent_Exception(AException: PExceptionRecord; AThreadId: DWORD): Boolean;
+    procedure   HandleEvent_Exception(AException: PExceptionRecord; AThreadId: DWORD);
     procedure   HandleEvent_ExitProcess(AInfos: PExitProcessDebugInfo; AThreadId: DWORD);
     procedure   HandleEvent_ExitThread(AInfos: PExitThreadDebugInfo; AThreadId: DWORD);
     procedure   HandleEvent_GenericException(AException: PExceptionRecord; AThreadId: DWORD);
@@ -105,6 +106,10 @@ implementation
 
 uses
   Dialogs;
+
+const
+  FIRST_CHANCE_LABEL  = '[First chance] ';
+  SECOND_CHANCE_LABEL = '[Second chance - UNHANDLED] ';
 
 { TBugFinderCore }
 
@@ -174,12 +179,13 @@ end;
 
 procedure TBugFinderCore.Debug;
 var
-  Event  : TDebugEvent;
-  LError : Integer;
-  Path   : String;
-  lpPrms : PChar; 
-  lpPath : PChar;
-  SI     : TStartupInfo;
+  ContinueStatus : DWORD;
+  Event          : TDebugEvent;
+  LError         : Integer;
+  Path           : String;
+  lpPrms         : PChar; 
+  lpPath         : PChar;
+  SI             : TStartupInfo;
 begin
   FStopped := True;
 
@@ -221,7 +227,6 @@ begin
   FAppCodeBase := 0;
   FStopped     := False;
   FIsStartBP   := True;
-  FLastBP      := nil;
 
   while not FStopped do begin
 
@@ -229,17 +234,23 @@ begin
     
     while WaitForDebugEvent(Event, 100) do begin
 
+      ContinueStatus := DBG_CONTINUE;
+
       case Event.dwDebugEventCode of
 
         EXCEPTION_DEBUG_EVENT      : begin
-          if HandleEvent_Exception(@Event.Exception, Event.dwThreadId) then
-            with Event.Exception.ExceptionRecord do
-              if
-                (ExceptionCode  <> EXCEPTION_BREAKPOINT)  and
-                (ExceptionCode  <> EXCEPTION_SINGLE_STEP)
-              then
-                with Event do
-                  ContinueDebugEvent(dwProcessId, dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
+          FFirstChance := (Event.Exception.dwFirstChance <> 0);
+
+          HandleEvent_Exception(@Event.Exception, Event.dwThreadId);
+
+          { Every exception but the breakpoints must be passed to the application }
+
+          with Event.Exception.ExceptionRecord do
+            if
+              (ExceptionCode  <> EXCEPTION_BREAKPOINT)  and
+              (ExceptionCode  <> EXCEPTION_SINGLE_STEP)
+            then
+              ContinueStatus := DBG_EXCEPTION_NOT_HANDLED;
         end;
 
         OUTPUT_DEBUG_STRING_EVENT  : HandleEvent_OutputDebugString(@Event.DebugString);
@@ -261,7 +272,7 @@ begin
       end;
 
       with Event do
-        ContinueDebugEvent(dwProcessId, dwThreadId, DBG_CONTINUE);
+        ContinueDebugEvent(dwProcessId, dwThreadId, ContinueStatus);
     end;
 
     LError := GetLastError;
@@ -311,7 +322,13 @@ begin
 
   { Custom exception provider }
 
-  LogMsg(AMessage, [ARelativeAddress], AIsError);
+  if AIsError then begin
+    if FFirstChance then
+      LogMsg(FIRST_CHANCE_LABEL + AMessage, [ARelativeAddress], AIsError)
+    else
+      LogMsg(SECOND_CHANCE_LABEL + AMessage, [ARelativeAddress], AIsError);
+  end else
+    LogMsg(AMessage, [ARelativeAddress], AIsError);
 
   if Assigned(AExceptionProvider) then
     AExceptionProvider.HandleException(AException);
@@ -445,9 +462,17 @@ begin
     LogMsg('Created thread 0x%.08x with handle 0x%.08x.', [AThreadId, AInfos^.hThread], False);
 end;
 
+function TBugFinderCore.EscapeFormat(const AText: String): String;
+begin
+  { Messages are used as format strings: "%" must be doubled }
+
+  Result := StringReplace(AText, '%', '%%', [rfReplaceAll]);
+end;
+
 procedure TBugFinderCore.HandleEvent_BreakPoint(ARawAddress, ARelativeAddress: DWORD; AException: PExceptionRecord; AThreadID: DWORD);
 var
-  BP : TBreakpoint;
+  BP  : TBreakpoint;
+  Thd : TThreadItem;
 begin
   if FIsStartBP then begin
     FIsStartBP := False;
@@ -463,22 +488,30 @@ begin
     end;
 
     if not FConfig.SuppressBreakpointSourceDetails then
-      LogDebugInfos(AException, ARawAddress, ARelativeAddress, 'Breakpoint at 0x%.08x ' + Format('[%s]', [BP.Name]), False, nil, AThreadID);
+      LogDebugInfos(AException, ARawAddress, ARelativeAddress, 'Breakpoint at 0x%.08x ' + Format('[%s]', [EscapeFormat(BP.Name)]), False, nil, AThreadID);
 
     if not BP.Resume(AThreadID) then
       LogMsg('Errore resuming breapoint "%s".', [BP.Name], True)
     else begin
-      FLastBP := BP;
+      Thd := FThreads.Find(AThreadID);
+      if Assigned(Thd) then
+        Thd.PendingBP := BP;
+
       LogMsg('BP "%s" on "[%s] %s::%s".', [BP.Name, BP.Module, BP.UnitName, BP.Method], False);
     end;
   end;
 end;
 
-procedure TBugFinderCore.HandleEvent_BreakPoint_SingleStep(ADbgAddr: DWORD);
+procedure TBugFinderCore.HandleEvent_BreakPoint_SingleStep(ADbgAddr: DWORD; AThreadId: DWORD);
 var
-  BP : TBreakpoint;
+  BP  : TBreakpoint;
+  Thd : TThreadItem;
 begin
-  BP := FLastBP;
+  BP  := nil;
+  Thd := FThreads.Find(AThreadId);
+
+  if Assigned(Thd) then
+    BP := TBreakpoint(Thd.PendingBP);
 
   if not Assigned(BP) then begin
     BP := FBreakpoints.Find(ADbgAddr - 1);
@@ -492,16 +525,16 @@ begin
   if not BP.Activate(FProcData.hProcess) then
     LogMsg('Error re/activating breapoint "%s".', [BP.Name], True);
 
-  FLastBP := nil;
+  if Assigned(Thd) then
+    Thd.PendingBP := nil;
 end;
 
-function TBugFinderCore.HandleEvent_Exception(AException: PExceptionRecord; AThreadId: DWORD): Boolean;
+procedure TBugFinderCore.HandleEvent_Exception(AException: PExceptionRecord; AThreadId: DWORD);
 var
   ErrMsg     : String;
   TmpAddress : DWORD;
 begin
-  Result      := True;
-  TmpAddress  := DWORD(AException^.ExceptionAddress);
+  TmpAddress := DWORD(AException^.ExceptionAddress);
 
   case AException^.ExceptionCode of
 
@@ -530,46 +563,25 @@ begin
       LogDebugInfos(AException, TmpAddress, TmpAddress, ErrMsg, True, nil, AThreadID);
     end;
 
-    EXCEPTION_FLT_DIVIDE_BY_ZERO       : begin
-      LogDebugInfos(AException, TmpAddress, TmpAddress, 'Floating point divide by zero at 0x%.08x.', True, nil, AThreadID);
-      Result := False;
-    end;
+    EXCEPTION_FLT_DIVIDE_BY_ZERO       : LogDebugInfos(AException, TmpAddress, TmpAddress, 'Floating point divide by zero at 0x%.08x.', True, nil, AThreadID);
 
-    EXCEPTION_INT_DIVIDE_BY_ZERO       : begin
-      LogDebugInfos(AException, TmpAddress, TmpAddress, 'Integer divide by zero at 0x%.08x.', True, nil, AThreadID);
-      Result := False;
-    end;
+    EXCEPTION_INT_DIVIDE_BY_ZERO       : LogDebugInfos(AException, TmpAddress, TmpAddress, 'Integer divide by zero at 0x%.08x.', True, nil, AThreadID);
 
-    EXCEPTION_PRIV_INSTRUCTION         : begin
-      LogDebugInfos(AException, TmpAddress, TmpAddress, 'Privileged instruction at 0x%.08x.', True, nil, AThreadID);
-      Result := False;
-    end;
+    EXCEPTION_PRIV_INSTRUCTION         : LogDebugInfos(AException, TmpAddress, TmpAddress, 'Privileged instruction at 0x%.08x.', True, nil, AThreadID);
 
-    EXCEPTION_ILLEGAL_INSTRUCTION      : begin
-      LogDebugInfos(AException, TmpAddress, TmpAddress, 'Illegal instruction at 0x%.08x.', True, nil, AThreadID);
-      Result := False;
-    end;
+    EXCEPTION_ILLEGAL_INSTRUCTION      : LogDebugInfos(AException, TmpAddress, TmpAddress, 'Illegal instruction at 0x%.08x.', True, nil, AThreadID);
 
-    EXCEPTION_NONCONTINUABLE_EXCEPTION : begin
-      LogDebugInfos(AException, TmpAddress, TmpAddress, 'Non continuable exception at 0x%.08x.', True, nil, AThreadID);
-      Result := False;
-    end;
+    EXCEPTION_NONCONTINUABLE_EXCEPTION : LogDebugInfos(AException, TmpAddress, TmpAddress, 'Non continuable exception at 0x%.08x.', True, nil, AThreadID);
 
-    EXCEPTION_STACK_OVERFLOW           : begin
-      LogDebugInfos(AException, TmpAddress, TmpAddress, 'Stack overflow at 0x%.08x.', True, nil, AThreadID);
-      Result := False;
-    end;
+    EXCEPTION_STACK_OVERFLOW           : LogDebugInfos(AException, TmpAddress, TmpAddress, 'Stack overflow at 0x%.08x.', True, nil, AThreadID);
 
-    EXCEPTION_INVALID_DISPOSITION      : begin
-      LogDebugInfos(AException, TmpAddress, TmpAddress, 'Invalid disposition at 0x%.08x.', True, nil, AThreadID);
-      Result := False;
-    end;
+    EXCEPTION_INVALID_DISPOSITION      : LogDebugInfos(AException, TmpAddress, TmpAddress, 'Invalid disposition at 0x%.08x.', True, nil, AThreadID);
 
     EXCEPTION_BREAKPOINT               : HandleEvent_BreakPoint(TmpAddress, TmpAddress, AException, AThreadId);
-    EXCEPTION_SINGLE_STEP              : HandleEvent_BreakPoint_SingleStep(TmpAddress);
+    EXCEPTION_SINGLE_STEP              : HandleEvent_BreakPoint_SingleStep(TmpAddress, AThreadId);
 
     else begin
-      HandleEvent_GenericException(AException, TmpAddress);
+      HandleEvent_GenericException(AException, AThreadId);
     end;    
   end;
 end;
@@ -605,7 +617,7 @@ begin
   if Assigned(ExcProvider) then begin
     { Custom exception provider }
 
-    ErrMsg     := ExcProvider.GetDescription + ' at address 0x%.08x.';
+    ErrMsg     := EscapeFormat(ExcProvider.GetDescription) + ' at address 0x%.08x.';
     RelAddress := ExcProvider.TranslateExceptionAddress(AException);
 
     LogDebugInfos(AException, TmpAddress, RelAddress, ErrMsg, True, ExcProvider, AThreadID);
@@ -616,7 +628,7 @@ begin
     ErrMsg := ErrMsg + 'address 0x%.08x, ';
 
     try
-      ErrMsg := ErrMsg + Format('sys. msg. = "%s".', [SysErrorMessage(AException^.ExceptionCode)]);
+      ErrMsg := ErrMsg + Format('sys. msg. = "%s".', [EscapeFormat(SysErrorMessage(AException^.ExceptionCode))]);
     except
       ErrMsg := ErrMsg + 'sys. msg. = "Unknown!".';
     end;
@@ -703,6 +715,8 @@ var
   Kind : TLogKind;
   Msg  : String;
 begin
+  Msg := AMsg;
+
   if
     FConfig.SpoolToFile and
     Assigned(FLog)

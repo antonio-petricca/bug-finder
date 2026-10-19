@@ -12,16 +12,18 @@ uses
 type
   TThreadItem = class(TObject)
   private
-    FHandle : THandle;
-    FId     : DWORD;
+    FHandle    : THandle;
+    FId        : DWORD;
+    FPendingBP : TObject;
   public
     constructor Create(AId: DWORD; AHandle: THandle); reintroduce;
     destructor  Destroy; override;
 
     procedure   GetFrame(out AFrame: TStackFrame);
 
-    property    Handle : THandle read FHandle;
-    property    Id     : DWORD   read FId;
+    property    Handle    : THandle read FHandle;
+    property    Id        : DWORD   read FId;
+    property    PendingBP : TObject read FPendingBP write FPendingBP;
   end;
 
   TThreadsList = class(TObject)
@@ -45,8 +47,9 @@ constructor TThreadItem.Create(AId: DWORD; AHandle: THandle);
 begin
   inherited Create;
 
-  FHandle := AHandle;
-  FId     := AId;
+  FHandle    := AHandle;
+  FId        := AId;
+  FPendingBP := nil;
 end;
 
 destructor TThreadItem.Destroy;
