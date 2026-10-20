@@ -45,6 +45,8 @@ The benefits of the Bug Finder are listed below:
     
     - exception address;
     
+    - first chance / second chance (unhandled) classification;
+    
     - binary module reference;
     
     - if exception is a Delphi exception BF rebuilds exception informations

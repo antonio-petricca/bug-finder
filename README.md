@@ -36,6 +36,12 @@ The Bug Finder will solve the problem.
 For Delphi applications compiled with a detailed debug map files it will get
 also information about the location of the exceptions in the source code.
 
+----------------------
+Latest release: 1.2.1
+----------------------
+
+See "docs/ChangeLog.txt" for the list of changes.
+
 ----------------
 More information
 ----------------

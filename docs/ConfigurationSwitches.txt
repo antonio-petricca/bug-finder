@@ -85,6 +85,11 @@ Section: Logging
 
     Enable(1)/Disable(0) auto showing up of the log window when exceptions occur.
 
+    Note: every exception is reported with a prefix telling whether it was
+    caught at its first chance ("[First chance]", the application may still
+    handle it) or at its second chance ("[Second chance - UNHANDLED]", the
+    exception was not handled by the application and is going to terminate it).
+
 --------------------   
 Section: Breakpoints
 --------------------   
